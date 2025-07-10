@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 pygame.init()
 window = pygame.display.set_mode((500, 500)) #
 zmina_bg = pygame.image.load("jevil_bg.jpg")                                    #загрузка заднего фона
@@ -28,7 +29,7 @@ class Kartinka():                                                               
     def draw(self):
         if self.visible:
             window.blit(self.image, (self.rect.x, self.rect.y))                 
-            
+width_hp = 100            
 knopka_kr = Kartinka(100, 100, "kris_back.png", 80, 120)                        #кнопки-персонажи                                   
 knopka_kr.visible = True
 knopka_spm = Kartinka(150, 150, "spamtone.png", 250, 70)
@@ -38,6 +39,8 @@ knopka_sus = Kartinka(100, 100, "susie_back.png", 70, 200)
 knopka_sus.visible = False
 knopka_rals = Kartinka(100,100, "ralsei_dlt.png", 80, 300)
 knopka_kng = Kartinka(150,150, "knight.png", 270,180)
+soul_dysha = Kartinka(200,190, "soul_krs.png",250,250)
+
 kng_hp = 3
 
 spm_jevil_active = False
@@ -53,6 +56,7 @@ while game:
         knopka_kng.draw()
         knopka_rals.draw()
         knopka_tenna.draw()
+        soul_dysha.draw()
         if spm_jevil_active and not knopka_spm.visible and not knopka_jevil.visible and not knopka_tenna.visible:
             knopka_sus.visible = True
             knopka_rals.visible = True
@@ -93,20 +97,37 @@ while game:
                 pygame.mixer.music.set_volume(0.4)
                 pygame.mixer.music.play(0)
                 
-        if iw.type == pygame.MOUSEBUTTONDOWN:                                    #работа кнопки сьюзи и ралзей
-            x, y = pygame.mouse.get_pos()
+        # if iw.type == pygame.MOUSEBUTTONDOWN:                                    #работа кнопки сьюзи и ралзей
+        #     x, y = pygame.mouse.get_pos()
             if knopka_sus.visible and knopka_sus.rect.collidepoint(x, y)or knopka_rals.visible and knopka_rals.rect.collidepoint(x, y):
                 pygame.mixer.music.load("The_Chase.mp3")
                 pygame.mixer.music.set_volume(0.4)
                 pygame.mixer.music.play(-1)
                 knopka_kng.visible = True
+                
+                pygame.draw.rect(window,(0,255,0),(knopka_kng.rect.x,knopka_kng.rect.y,100,20))
             if knopka_kng.visible and knopka_kng.rect.collidepoint(x, y):        #работа кнопки рыцаря
                 pygame.mixer.music.load("attack_slash.mp3")
                 pygame.mixer.music.set_volume(0.4)
                 pygame.mixer.music.play(0)
                 kng_hp -= 1
+                width_hp -= 33
+                
             if kng_hp == 0:
                 knopka_kng.visible = False
     
-        
+    if soul_dysha.visible == True:
+        soul_dysha.draw()
+        print(1)
+    
+    if knopka_kng.visible == True:
+        soul_dysha.draw()
+        soul_dysha.visible = True
+        pygame.draw.rect(window,(0,255,0),(knopka_kng.rect.x,knopka_kng.rect.y,width_hp,20))
+        pygame.time.delay(100)
+        knopka_kng.rect.x = randint(250,500)
+        pygame.time.delay(100)
+        knopka_kng.rect.y = randint(0,400)
+        # elif knopka_kng.rect.x >= 500:
+        #     knopka_kng.rect.x -= 1
     pygame.display.update()
